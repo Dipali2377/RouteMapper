@@ -1,0 +1,346 @@
+/* Navbar.css */
+
+:root {
+  --navbar-bg: #0e0e1a;
+  --navbar-glow: rgba(139, 233, 253, 0.1);
+  --navbar-border: rgba(75, 87, 126, 0.2);
+  --brand-color: #8be9fd;
+  --brand-hover: #a0f0ff;
+  --email-bg: rgba(60, 70, 90, 0.3);
+  --email-hover: rgba(139, 233, 253, 0.15);
+  --logout-red: #d32f2f;
+  --logout-red-dark: #a01010;
+  --logout-glow: #ffc107;
+}
+
+.navbar {
+  /* Complex navbar background: base gradient + subtle noise + dynamic glow */
+  background: radial-gradient(
+      circle at top left,
+      rgba(70, 70, 100, 0.1) 0%,
+      transparent 70%
+    ),
+    linear-gradient(90deg, #0e0e1a 0%, #1a1a2e 100%);
+  padding: 20px 80px; /* More generous padding */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6),
+    /* Deeper, softer shadow */ 0 0 0 1px rgba(70, 80, 120, 0.2); /* Thin outer light border */
+  color: #c4d7e0;
+  font-family: "Montserrat", sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  animation: fadeInDownNavbar 0.8s ease-out forwards;
+  backdrop-filter: blur(10px); /* Stronger frosted glass effect */
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(75, 87, 126, 0.2); /* Subtle bottom border */
+  overflow: hidden; /* For inner effects */
+  position: relative; /* For absolutely positioned inner elements */
+}
+
+/* Inner atmospheric glow for navbar */
+.navbar::before {
+  content: "";
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  width: 80%;
+  height: 100px;
+  background: radial-gradient(
+    circle,
+    rgba(139, 233, 253, 0.08) 0%,
+    transparent 60%
+  );
+  filter: blur(25px);
+  transform: translateX(-50%);
+  z-index: -1;
+  pointer-events: none;
+  animation: subtleGlow 3s infinite alternate ease-in-out;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 210px;
+  padding-right: 210px;
+}
+
+.nav-brand h2 {
+  margin: 0;
+  font-size: 2.3em; /* Slightly larger brand name */
+  font-weight: 800; /* Extra bold */
+  letter-spacing: 2.5px; /* More pronounced spacing */
+  color: #8be9fd;
+  display: flex;
+  align-items: center;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  text-shadow: 0 0 12px rgba(139, 233, 253, 0.4); /* Stronger text glow */
+}
+
+.nav-brand h2:hover {
+  transform: scale(1.05); /* Slightly grow on hover */
+  color: #a0f0ff; /* Slightly brighter on hover */
+  text-shadow: 0 0 18px rgba(139, 233, 253, 0.6);
+}
+
+.nav-brand h2 span {
+  /* Map emoji */
+  margin-right: 18px; /* More space */
+  font-size: 1.5em; /* Larger emoji */
+  line-height: 1;
+  animation: pulse 2s infinite ease-in-out;
+  filter: drop-shadow(
+    0 0 8px rgba(139, 233, 253, 0.5)
+  ); /* Emoji specific glow */
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 40px; /* More spacing */
+}
+
+.user-email {
+  font-size: 1.15em; /* Slightly larger email font */
+  font-weight: 500;
+  color: #a0b2c3;
+  padding: 12px 25px; /* More padding */
+  border-radius: 30px; /* More pronounced pill shape */
+  /* Email background: subtle radial gradient + inner shadow */
+  background: radial-gradient(
+    circle at center,
+    rgba(60, 70, 90, 0.3) 0%,
+    rgba(50, 60, 80, 0.3) 100%
+  );
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s ease;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(75, 87, 126, 0.3);
+  margin-left: 40px;
+}
+
+.user-email:hover {
+  background: radial-gradient(
+    circle at center,
+    rgba(139, 233, 253, 0.15) 0%,
+    transparent 100%
+  ); /* Brighter radial background on hover */
+  color: #8be9fd;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(139, 233, 253, 0.2); /* Outer glow on hover */
+}
+
+.logout-btn {
+  /* NEW: Hexagonal-like shape with clip-path */
+  position: relative;
+  overflow: hidden;
+  border: none; /* Remove default border */
+  padding: 16px 38px; /* Adjust padding for new shape */
+  font-size: 1.15em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.8px; /* More dramatic letter spacing */
+  color: #fff;
+  cursor: pointer;
+  z-index: 1; /* Ensure button content is above pseudo-elements */
+
+  /* Base Gradient (Energetic Ruby) - this will be the inner color */
+  background: linear-gradient(
+    45deg,
+    #d32f2f,
+    #a01010
+  ); /* Darker, more intense red */
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+
+  clip-path: polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%);
+  -webkit-clip-path: polygon(
+    15% 0%,
+    85% 0%,
+    100% 50%,
+    85% 100%,
+    15% 100%,
+    0% 50%
+  );
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+/* Outer border/glow for the hexagon (using ::before) */
+.logout-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Use a vibrant, almost neon border color */
+  background: linear-gradient(45deg, #ffc107, #ff5722); /* Orange-gold glow */
+  z-index: -1;
+  transform: scale(
+    1.05
+  ); /* Slightly larger than the button to act as a border */
+  clip-path: polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%);
+  -webkit-clip-path: polygon(
+    15% 0%,
+    85% 0%,
+    100% 50%,
+    85% 100%,
+    15% 100%,
+    0% 50%
+  );
+  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.5s ease;
+  filter: blur(5px); /* Soft glow initially */
+}
+
+/* Inner shimmer/light burst for the hexagon (using ::after) */
+.logout-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 80%
+  );
+  transform: scale(0); /* Start hidden */
+  opacity: 0;
+  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+  z-index: 0; /* Behind button text, in front of pseudo-border */
+}
+
+.logout-btn:hover {
+  transform: translateY(-5px) scale(1.03); /* Lift and slight scale */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8); /* Deeper shadow on hover */
+  filter: brightness(1.1);
+}
+
+.logout-btn:hover::before {
+  transform: scale(1.1); /* Border expands more */
+  filter: blur(8px); /* Glow intensifies */
+  background: linear-gradient(
+    45deg,
+    #ffeb3b,
+    #ff9800
+  ); /* Brighter, more yellow-orange glow */
+}
+
+.logout-btn:hover::after {
+  transform: scale(1.5); /* Inner shimmer expands */
+  opacity: 1;
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+  filter: brightness(1);
+}
+
+/* --- Keyframe Animations --- */
+@keyframes fadeInDownNavbar {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  } /* Slightly stronger pulse */
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes subtleGlow {
+  /* Used for navbar and wrapper inner glow */
+  0% {
+    opacity: 0.08;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.15;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.08;
+    transform: scale(1);
+  }
+}
+
+/* --- Responsive Adjustments for Navbar --- */
+@media (max-width: 992px) {
+  .navbar {
+    padding: 15px 30px;
+  }
+
+  .nav-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav-brand h2 {
+    font-size: 1.9em;
+    letter-spacing: 2px;
+  }
+
+  .nav-brand h2 span {
+    margin-right: 12px;
+    font-size: 1.3em;
+  }
+
+  .nav-user {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .user-email {
+    font-size: 1em;
+    padding: 10px 20px;
+  }
+
+  .logout-btn {
+    padding: 14px 30px; /* Adjusted padding for smaller screens */
+    font-size: 1.05em;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar {
+    padding: 12px 18px;
+  }
+
+  .nav-brand h2 {
+    font-size: 1.6em;
+  }
+
+  .nav-brand h2 span {
+    margin-right: 10px;
+    font-size: 1.1em;
+  }
+
+  .user-email {
+    font-size: 0.9em;
+    padding: 8px 15px;
+  }
+
+  .logout-btn {
+    padding: 12px 25px; /* Adjusted padding for smallest screens */
+    font-size: 0.95em;
+  }
+}

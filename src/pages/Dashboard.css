@@ -1,0 +1,41 @@
+/* Center entire dashboard */
+.dashboard {
+  min-height: 100vh;
+  background-color: #121212;
+  color: #fff;
+  width: 100%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Content wrapper to align things centrally */
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* Heading section */
+.welcome-section {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.welcome-section h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.welcome-section p {
+  font-size: 1.2rem;
+  color: #c0c0c0;
+}
+
+/* Map section */
+.map-container-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
