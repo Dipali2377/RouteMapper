@@ -18,17 +18,15 @@ const MapComponent = () => {
   const [distance, setDistance] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Initialize the map
   useEffect(() => {
     if (!mapInitialized.current) {
       mapRef.current = L.map("map").setView([28.6139, 77.209], 13);
-
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors",
       }).addTo(mapRef.current);
-
       mapInitialized.current = true;
     }
-
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();
@@ -38,45 +36,33 @@ const MapComponent = () => {
     };
   }, []);
 
+  // Geocode helper
   const geocode = async (location) => {
-    const url = `https://api.openrouteservice.org/geocode/search`;
-    const response = await axios.get(url, {
-      headers: { Authorization: ORS_API_KEY },
-      params: {
-        api_key: ORS_API_KEY,
-        text: location,
-        size: 1,
-      },
-    });
-
-    if (response.data.features.length === 0) {
-      throw new Error(`No results found for "${location}"`);
-    }
-
-    const { coordinates } = response.data.features[0].geometry;
-    return coordinates;
+    const response = await axios.get(
+      "https://api.openrouteservice.org/geocode/search",
+      {
+        headers: { Authorization: ORS_API_KEY },
+        params: { api_key: ORS_API_KEY, text: location, size: 1 },
+      }
+    );
+    if (!response.data.features.length)
+      throw new Error(`No results for "${location}"`);
+    return response.data.features[0].geometry.coordinates;
   };
 
+  // Calculate route
   const calculateRoute = async () => {
-    if (!pointA || !pointB) {
-      alert("Please enter both points");
-      return;
-    }
-
+    if (!pointA || !pointB) return alert("Please enter both points");
     setLoading(true);
     setDistance("");
     try {
-      // Parallel geocode calls to speed up
       const [coordsA, coordsB] = await Promise.all([
         geocode(pointA),
         geocode(pointB),
       ]);
-
-      const response = await axios.post(
+      const res = await axios.post(
         "https://api.openrouteservice.org/v2/directions/driving-car/geojson",
-        {
-          coordinates: [coordsA, coordsB],
-        },
+        { coordinates: [coordsA, coordsB] },
         {
           headers: {
             Authorization: ORS_API_KEY,
@@ -84,71 +70,66 @@ const MapComponent = () => {
           },
         }
       );
-
-      const geometry = response.data.features[0].geometry;
-      const summary = response.data.features[0].properties.summary;
-
+      const geometry = res.data.features[0].geometry;
+      const summary = res.data.features[0].properties.summary;
       setDistance((summary.distance / 1000).toFixed(2) + " km");
 
-      if (routeLayerRef.current)
-        mapRef.current.removeLayer(routeLayerRef.current);
-      if (startMarkerRef.current)
-        mapRef.current.removeLayer(startMarkerRef.current);
-      if (endMarkerRef.current)
-        mapRef.current.removeLayer(endMarkerRef.current);
+      // Remove any existing overlays
+      [routeLayerRef, startMarkerRef, endMarkerRef].forEach((ref) => {
+        if (ref.current) mapRef.current.removeLayer(ref.current);
+      });
 
       const latlngs = geometry.coordinates.map(([lng, lat]) => [lat, lng]);
-
       routeLayerRef.current = L.polyline(latlngs, {
         color: "blue",
         weight: 4,
         opacity: 0.8,
       }).addTo(mapRef.current);
 
-      const [startLat, startLng] = [latlngs[0][0], latlngs[0][1]];
-      startMarkerRef.current = L.marker([startLat, startLng], {
-        icon: L.icon({
-          iconUrl: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-          iconSize: [32, 32],
-          iconAnchor: [16, 32],
-        }),
-      }).addTo(mapRef.current);
-
-      const [endLat, endLng] = [
-        latlngs[latlngs.length - 1][0],
-        latlngs[latlngs.length - 1][1],
+      const addMarker = (lat, lng, iconUrl) => {
+        return L.marker([lat, lng], {
+          icon: L.icon({ iconUrl, iconSize: [32, 32], iconAnchor: [16, 32] }),
+        }).addTo(mapRef.current);
+      };
+      [startMarkerRef.current, endMarkerRef.current] = [
+        addMarker(
+          latlngs[0][0],
+          latlngs[0][1],
+          "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
+        ),
+        addMarker(
+          latlngs.at(-1)[0],
+          latlngs.at(-1)[1],
+          "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+        ),
       ];
-      endMarkerRef.current = L.marker([endLat, endLng], {
-        icon: L.icon({
-          iconUrl: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-          iconSize: [32, 32],
-          iconAnchor: [16, 32],
-        }),
-      }).addTo(mapRef.current);
 
       mapRef.current.fitBounds(routeLayerRef.current.getBounds());
       setTimeout(() => mapRef.current.invalidateSize(), 200);
-    } catch (error) {
-      console.error("Routing error:", error);
-      alert(error.message || "Failed to calculate route");
+    } catch (err) {
+      console.error("Routing error:", err);
+      alert(err.message || "Failed to calculate route");
     } finally {
       setLoading(false);
     }
   };
 
+  // Clear everything
   const clearRoute = () => {
     setPointA("");
     setPointB("");
     setDistance("");
     setLoading(false);
-    if (routeLayerRef.current)
-      mapRef.current.removeLayer(routeLayerRef.current);
-    if (startMarkerRef.current)
-      mapRef.current.removeLayer(startMarkerRef.current);
-    if (endMarkerRef.current) mapRef.current.removeLayer(endMarkerRef.current);
-    routeLayerRef.current = null;
-    startMarkerRef.current = null;
-    endMarkerRef.current = null;
+    [routeLayerRef, startMarkerRef, endMarkerRef].forEach((ref) => {
+      if (ref.current) mapRef.current.removeLayer(ref.current);
+      ref.current = null;
+    });
+  };
+
+  // 🟰 Swap points
+  const swapPoints = () => {
+    setPointA(pointB);
+    setPointB(pointA);
   };
 
   return (
@@ -173,6 +154,9 @@ const MapComponent = () => {
         </button>
         <button onClick={clearRoute} disabled={loading}>
           Clear
+        </button>
+        <button onClick={swapPoints} disabled={loading || (!pointA && !pointB)}>
+          Swap A ↔ B
         </button>
       </div>
 

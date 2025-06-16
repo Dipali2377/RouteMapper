@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
-export default function LocationInput({ 
-  placeholder, 
-  value, 
-  onChange, 
+export default function LocationInput({
+  placeholder,
+  value,
+  onChange,
   onLocationSelect,
-  googleMaps 
+  googleMaps,
 }) {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -26,10 +26,13 @@ export default function LocationInput({
       autocompleteService.current.getPlacePredictions(
         {
           input: inputValue,
-          types: ['geocode']
+          types: ["geocode"],
         },
         (predictions, status) => {
-          if (status === googleMaps.places.PlacesServiceStatus.OK && predictions) {
+          if (
+            status === googleMaps.places.PlacesServiceStatus.OK &&
+            predictions
+          ) {
             setSuggestions(predictions);
             setShowSuggestions(true);
           } else {
@@ -50,7 +53,7 @@ export default function LocationInput({
     setShowSuggestions(false);
   };
 
-  const handleBlur = () => {       
+  const handleBlur = () => {
     setTimeout(() => setShowSuggestions(false), 150);
   };
 
