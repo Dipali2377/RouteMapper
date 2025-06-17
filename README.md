@@ -24,7 +24,6 @@ An elegant React-based app that lets logged-in users explore optimized routes be
 
 - 🔐 **Firebase Authentication** - Email/password and Google sign-in
 - 🗺️ **Interactive Maps** - Google Maps integration with route plotting
-- 📍 **Location Autocomplete** - Smart location suggestions as you type
 - 🎨 **Beautiful UI** - Pinkish, formal design with responsive layout
 - 📱 **Mobile Friendly** - Optimized for all device sizes
 - ⚡ **Real-time Routes** - Live distance and duration calculations

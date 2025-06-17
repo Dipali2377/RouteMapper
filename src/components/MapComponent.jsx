@@ -133,11 +133,7 @@ const MapComponent = () => {
     });
   };
 
-  // 🟰 Swap points
-  const swapPoints = () => {
-    setPointA(pointB);
-    setPointB(pointA);
-  };
+  // ----------------------
 
   return (
     <div className="map-container-wrapper">
@@ -162,9 +158,7 @@ const MapComponent = () => {
         <button onClick={clearRoute} disabled={loading}>
           Clear
         </button>
-        <button onClick={swapPoints} disabled={loading || (!pointA && !pointB)}>
-          Swap A ↔ B
-        </button>
+        {/* -------------------- */}
       </div>
 
       {(distance || duration) && (
