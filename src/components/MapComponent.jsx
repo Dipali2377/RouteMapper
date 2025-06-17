@@ -16,6 +16,7 @@ const MapComponent = () => {
   const [pointA, setPointA] = useState("");
   const [pointB, setPointB] = useState("");
   const [distance, setDistance] = useState("");
+  const [duration, setDuration] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Initialize the map
@@ -74,6 +75,11 @@ const MapComponent = () => {
       const summary = res.data.features[0].properties.summary;
       setDistance((summary.distance / 1000).toFixed(2) + " km");
 
+      const secs = summary.duration;
+      const hrs = Math.floor(secs / 3600);
+      const mins = Math.round((secs % 3600) / 60);
+      setDuration(`${hrs > 0 ? hrs + "h " : ""}${mins}m`);
+
       // Remove any existing overlays
       [routeLayerRef, startMarkerRef, endMarkerRef].forEach((ref) => {
         if (ref.current) mapRef.current.removeLayer(ref.current);
@@ -119,6 +125,7 @@ const MapComponent = () => {
     setPointA("");
     setPointB("");
     setDistance("");
+    setDuration("");
     setLoading(false);
     [routeLayerRef, startMarkerRef, endMarkerRef].forEach((ref) => {
       if (ref.current) mapRef.current.removeLayer(ref.current);
@@ -160,11 +167,18 @@ const MapComponent = () => {
         </button>
       </div>
 
-      {distance && (
+      {(distance || duration) && (
         <div className="info">
-          <p>
-            <strong>Distance:</strong> {distance}
-          </p>
+          {distance && (
+            <p>
+              <strong>Distance:</strong> {distance}
+            </p>
+          )}
+          {duration && (
+            <p>
+              <strong>Estimated time:</strong> {duration}
+            </p>
+          )}
         </div>
       )}
 

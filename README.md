@@ -16,6 +16,10 @@ An elegant React-based app that lets logged-in users explore optimized routes be
 
 ## ![Map Page](./public/map-page.jpeg)
 
+### 🔹 Direction Map
+
+## ![Direction Map](./public/direction-map.jpeg)
+
 ## Features
 
 - 🔐 **Firebase Authentication** - Email/password and Google sign-in
